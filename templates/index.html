@@ -8,16 +8,24 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body class="bg-gray-100 min-h-screen">
-    <div class="max-w-2xl mx-auto px-4 py-6" x-data='{ search: "", guests: {{ guests | tojson | safe }} }'>
+    <div class="max-w-2xl mx-auto px-4 py-6" x-data='{ searchName: "", searchTable: "", guests: {{ guests | tojson | safe }} }'>
         <h1 class="text-2xl font-bold text-gray-800 mb-4 text-center">Find Your Table</h1>
 
-        <input
-            type="text"
-            x-model="search"
-            placeholder="Type name to search..."
-            class="w-full px-4 py-3 text-lg border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none mb-4"
-            autofocus
-        >
+        <div class="flex gap-2 mb-4">
+            <input
+                type="text"
+                x-model="searchName"
+                placeholder="Filter by name..."
+                class="flex-1 px-4 py-3 text-lg border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
+                autofocus
+            >
+            <input
+                type="text"
+                x-model="searchTable"
+                placeholder="Table #"
+                class="w-24 px-4 py-3 text-lg border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none text-center"
+            >
+        </div>
 
         <div class="bg-white rounded-lg shadow overflow-hidden">
             <table class="w-full">
@@ -28,7 +36,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <template x-for="guest in guests.filter(g => g.name.toLowerCase().includes(search.toLowerCase()))" :key="guest.name + guest.table + Math.random()">
+                    <template x-for="guest in guests.filter(g => g.name.toLowerCase().includes(searchName.toLowerCase()) && (searchTable === '' || g.table.toString() === searchTable))" :key="guest.name + guest.table + Math.random()">
                         <tr class="border-b border-gray-200 hover:bg-blue-50">
                             <td class="px-4 py-3 text-gray-800" x-text="guest.name"></td>
                             <td class="px-4 py-3 text-center font-bold text-blue-600 text-xl" x-text="guest.table"></td>
@@ -38,7 +46,7 @@
             </table>
         </div>
 
-        <p class="text-center text-gray-500 text-sm mt-4" x-text="guests.filter(g => g.name.toLowerCase().includes(search.toLowerCase())).length + ' guests'"></p>
+        <p class="text-center text-gray-500 text-sm mt-4" x-text="guests.filter(g => g.name.toLowerCase().includes(searchName.toLowerCase()) && (searchTable === '' || g.table.toString() === searchTable)).length + ' guests'"></p>
     </div>
 </body>
 </html>
